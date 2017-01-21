@@ -120,12 +120,12 @@ static int uinp_destroy(lua_State *L) {
 			close(uinput_fd);
 			d->closed = true;
 			errno = original_errno;
-			luaerrmsg(L, "Error while destroying");
+			luaerrmsg(L, "Error while destroying (on ioctl)");
 	}
 	int clres = close(uinput_fd);
 	d->closed = true;
 	if (clres == -1) {
-		luaerrmsg(L, "Error while destroying");
+		luaerrmsg(L, "Error while destroying (on close)");
 	}
 	return 0;
 };
@@ -145,18 +145,36 @@ static void uinp_autosync(lua_State *L) {
 	}
 };
 
+static int uinp_create(lua_State *L) {
+	UinpDevice *d = checkuinput(L);
+	luaL_checktype(L, 2, LUA_TTABLE);
+	chncreat(L);
+	uinput_user_dev conf;
+	uinp_read_conf(L, 1, &conf);
+	ssize_t bytes;
+	bytes = write(d->fd, &conf, sizeof(uinput_user_dev));
+	if (bytes != sizeof(uinput_user_dev)) {
+		luaerrmsg(L, "Error while creating device (on write)");
+	};
+	if (ioctl(d->fd, UI_DEV_CREATE) == -1) {
+		luaerrmsg(L, "Error while creating device (on ioctl)");
+	};
+	d->created = true;
+	return 0;
+};
+
 static const struct luaL_Reg lib [] = {
 	{"open", uinp_open},
 	{"destroy", uinp_destroy},
 	{"sync", uinp_sync},
-	{"newdevice", uinp_dev_create},
+	{"create", uinp_create},
 	{NULL, NULL} // TODO: fill it!
 };
 
 //int luaopen_uinput_library (lua_State *L) {
 int luaopen_library (lua_State *L) {
 	luaL_newmetatable(L, "uinput");
-	uinp_dev_luaopen(L);
+//	uinp_dev_luaopen(L);
 	luaL_newlib(L, lib);
 	return 1;
 };

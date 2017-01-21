@@ -24,7 +24,7 @@
 lua_getfiled(L, -1, key)
 
 #define luaerrmsg(L, msg) \
-luaL_error(L, "%s: %s", msg, strerror(errno))
+luaL_error(L, "%s: %m", msg)
 
 #define luaerr(L, msg) \
 luaL_error(L, "Error in uinput: %s", msg)
@@ -36,3 +36,5 @@ typedef struct UinpDevice {
 	bool closed;
 } UinpDevice;
 #endif
+
+typedef struct uinput_user_dev uinput_user_dev;
