@@ -9,7 +9,9 @@ static void parse_name(lua_State *L, int idx, uinput_user_dev *dev) {
 		const char *name = luaL_checkstring(L,-1);
 		luaL_argcheck(L, strlen(name) <= UINPUT_MAX_NAME_SIZE, 3, "too long name");
 		strcpy(dev->name, name);
-	}
+	} else {
+		luaerr(L, "no \"name\" field in description table");
+	};
 	lua_pop(L,1);
 };
 

@@ -24,10 +24,13 @@
 lua_getfiled(L, -1, key)
 
 #define luaerrmsg(L, msg) \
-luaL_error(L, "%s: %m", msg)
+luaL_error(L, "%s: %s", msg, strerror(errno))
 
 #define luaerr(L, msg) \
 luaL_error(L, "Error in uinput: %s", msg)
+
+#define streq(s1, s2) \
+(strcmp(s1, s2) == 0)
 
 typedef struct UinpDevice {
 	int fd;

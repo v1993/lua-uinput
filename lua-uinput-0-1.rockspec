@@ -1,6 +1,6 @@
 package = "lua-uinput"
 version = "0.1"
-source = { url = "git://github.com/..." } -- TODO: type it here!
+source = { url = "git://github.com/v1993/lua-uinput.git" }
 description = {
    summary = "simple uinput API",
    detailed = [[Version of (s)uinput library for lua.
