@@ -352,8 +352,8 @@ static const struct luaL_Reg uinp_meta [] = {
 	{NULL, NULL}
 };
 
-//int luaopen_uinput_library (lua_State *L) {
-int luaopen_library (lua_State *L) {
+//int luaopen_library (lua_State *L) {
+int luaopen_uinput_mainpart (lua_State *L) {
 	luaL_newmetatable(L, "uinput");
 	luaL_setfuncs(L, uinp_meta, 0);
 //	uinp_dev_luaopen(L);

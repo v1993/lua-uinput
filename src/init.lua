@@ -1,2 +1,2 @@
-return require((...).defines)(require((...).mainpart))
+return require('uinput.defines')(require('uinput.mainpart'))
 -- Load functions, then add defines

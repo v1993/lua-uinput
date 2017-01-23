@@ -8,7 +8,7 @@ You can use it for emulating devices under linux.]],
    homepage = "http://vallua.ru",
    license = "MIT",
 }
-dependencies = { "lua >= 5.2" } -- TODO: Maybe 5.1? Check it!
+dependencies = { "lua >= 5.2" }
 
 external_dependencies = {
    LIBUDEV = {
@@ -24,7 +24,7 @@ build = {
 		['uinput.defines'] = 'src/defines.lua';
 		['uinput.mainpart'] = {
 			sources = {'src/library.c', 'src/deviceconf.c'};
-			libraries = {'libudev'};
+			libraries = {'udev'};
 			incdirs = {"$(LIBUDEV_INCDIR)"},
 			libdirs = {"$(LIBUDEV_LIBDIR)"}
 		}
