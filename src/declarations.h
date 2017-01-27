@@ -16,6 +16,7 @@
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
+#include "../ext/compat/compat-5.2.h"
 
 #define checkuinput(L) \
 (UinpDevice *)luaL_checkudata(L, 1, "uinput")

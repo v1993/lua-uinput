@@ -1,5 +1,9 @@
 return function(tab)
-_ENV = tab
+if setfenv then
+	setfenv(1, tab)
+else
+	_ENV = tab
+end
 ID_BUS = 0
 ID_VENDOR = 1
 ID_PRODUCT = 2
@@ -701,5 +705,5 @@ SND_BELL = 1
 SND_TONE = 2
 SND_MAX = 7
 SND_CNT = 8
-return _ENV
+return tab
 end

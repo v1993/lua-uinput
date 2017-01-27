@@ -8,7 +8,7 @@ You can use it for emulating devices under linux.]],
    homepage = "http://vallua.ru",
    license = "MIT",
 }
-dependencies = { "lua >= 5.2" }
+dependencies = { "lua >= 5.1" }
 
 external_dependencies = {
    LIBUDEV = {
