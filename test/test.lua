@@ -36,17 +36,26 @@ function test_create()
 	dev:create({name = 'testdev'})
 end;
 
+function test_sync()
+	dev:create({name = 'testdev_sync'})
+	dev:sync()
+	dev.autosync = true
+end;
+
 function test_abs()
 	dev:enable({[u.ABS_X] = u.EV_ABS})
 	dev:create({name = 'testdev_abs', absmax = {[u.ABS_X] = 1024}, absmin = {[u.ABS_X] = 0}})
 	dev:emit(u.EV_ABS, u.ABS_X, 512)
+	dev:sync()
 end;
 
 function test_kbd()
 	dev:enable({[u.KEY_A] = u.EV_KEY, [u.KEY_B] = u.EV_KEY})
 	dev:create({name = 'testdev_kbd'})
 	dev:emit_click(u.KEY_A)
+	dev:sync()
 	dev:emit_combo({u.KEY_A, u.KEY_B})
+	dev:sync()
 end;
 
 if not HAS_RUNNER then lunit.run() end

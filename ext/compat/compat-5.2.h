@@ -146,11 +146,13 @@ void luaL_checkversion (lua_State *L);
 
 int lua_absindex (lua_State *L, int i);
 void lua_copy (lua_State *L, int from, int to);
+#if !(LUA_VERSION_NUM != 503)
 void lua_rawgetp (lua_State *L, int i, const void *p);
+void lua_getuservalue (lua_State *L, int i);
+#endif
 void lua_rawsetp (lua_State *L, int i, const void *p);
 void *luaL_testudata (lua_State *L, int i, const char *tname);
 lua_Number lua_tonumberx (lua_State *L, int i, int *isnum);
-void lua_getuservalue (lua_State *L, int i);
 void lua_setuservalue (lua_State *L, int i);
 void luaL_setfuncs (lua_State *L, const luaL_Reg *l, int nup);
 void luaL_setmetatable (lua_State *L, const char *tname);

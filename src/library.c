@@ -267,7 +267,7 @@ static int uinp_emit_combo(lua_State *L) {
 	int errors = false;
 	size_t i;
 	int len = luaL_len(L, 2);
-	for(i = 0; i < len; ++i) {
+	for(i = 1; i <= len; i++) {
 		lua_pushinteger(L, i);
 		lua_gettable(L, 2);
 		if (!(orig_emit(d->fd, EV_KEY, luaL_checkunsigned(L, -1), 1, NULL))) {
@@ -275,7 +275,7 @@ static int uinp_emit_combo(lua_State *L) {
 			break;
 		};
 	};
-	while (i--) {
+	while (--i) {
 		lua_pushinteger(L, i);
 		lua_gettable(L, 2);
 		if (!(orig_emit(d->fd, EV_KEY, luaL_checkunsigned(L, -1), 0, NULL))) {
