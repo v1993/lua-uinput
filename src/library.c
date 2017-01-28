@@ -4,6 +4,12 @@
 
 // This library is based on suinput library from Tuomas Jorma Juhani Räsänen
 
+static uint16_t lua_checkunsigned(lua_State *L, int n) {
+	long int val = luaL_checkint(L, n);
+	luaL_argcheck(L, val >= 0, n, "number isn't unsigned");
+	return val;
+};
+
 static void chopen(lua_State *L) {
 	UinpDevice *d = checkuinput(L);
 	if (d->closed) {
@@ -168,8 +174,8 @@ static int uinp_enable_events(lua_State *L) {
 	chncreat(L);
 	lua_pushnil(L); // First iteration
 	while (lua_next(L, 2) != 0) {
-		uint16_t ev_type = luaL_checkunsigned(L, -1);
-		uint16_t ev_code = luaL_checkunsigned(L, -2);
+		uint16_t ev_type = lua_checkunsigned(L, -1);
+		uint16_t ev_code = lua_checkunsigned(L, -2);
 		unsigned long io;
 		if (ioctl(d->fd, UI_SET_EVBIT, ev_type) == -1) {
 			luaerrmsg(L, "Unable to enable type of events");
@@ -231,9 +237,9 @@ static int uinp_create(lua_State *L) {
 
 static int uinp_emit(lua_State *L) {
 	UinpDevice *d = checkuinput(L);
-	uint16_t ev_type = luaL_checkunsigned(L, 2);
-	uint16_t ev_code = luaL_checkunsigned(L, 3);
-	int32_t ev_value = luaL_checkunsigned(L, 4);
+	uint16_t ev_type = lua_checkunsigned(L, 2);
+	uint16_t ev_code = lua_checkunsigned(L, 3);
+	int32_t ev_value = luaL_checkint(L, 4);
 	chopen(L);
 	chcreat(L);
 	orig_emit(d->fd, ev_type, ev_code, ev_value, L);
@@ -243,7 +249,7 @@ static int uinp_emit(lua_State *L) {
 
 static int uinp_emit_click(lua_State *L) {
 	UinpDevice *d = checkuinput(L);
-	uint16_t key_code = luaL_checkunsigned(L, 2);
+	uint16_t key_code = lua_checkunsigned(L, 2);
 	chopen(L);
 	chcreat(L);
 	bool ok;
@@ -268,7 +274,7 @@ static int uinp_emit_combo(lua_State *L) {
 	for(i = 1; i <= len; i++) {
 		lua_pushinteger(L, i);
 		lua_gettable(L, 2);
-		if (!(orig_emit(d->fd, EV_KEY, luaL_checkunsigned(L, -1), 1, NULL))) {
+		if (!(orig_emit(d->fd, EV_KEY, lua_checkunsigned(L, -1), 1, NULL))) {
 			errors = true;
 			break;
 		};
@@ -276,7 +282,7 @@ static int uinp_emit_combo(lua_State *L) {
 	while (--i) {
 		lua_pushinteger(L, i);
 		lua_gettable(L, 2);
-		if (!(orig_emit(d->fd, EV_KEY, luaL_checkunsigned(L, -1), 0, NULL))) {
+		if (!(orig_emit(d->fd, EV_KEY, lua_checkunsigned(L, -1), 0, NULL))) {
 			errors = true;
 		}
 	};
