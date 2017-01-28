@@ -20,7 +20,8 @@ static void parse_max(lua_State *L, int idx, uinput_user_dev *dev) {
 	if (lua_isnil(L, -1)) {
 		goto out;
 	} else if (lua_istable(L, -1)) {
-		for (int i=0;i<=ABS_CNT;i++) {
+		int i;
+		for (i=0;i<=ABS_CNT;i++) {
 			lua_pushnumber(L, i);
 			lua_gettable(L, -2);
 			if (!(lua_isnil(L, -1))) {
@@ -41,7 +42,8 @@ static void parse_min(lua_State *L, int idx, uinput_user_dev *dev) {
 	if (lua_isnil(L, -1)) {
 		goto out;
 	} else if (lua_istable(L, -1)) {
-		for (int i=0;i<=ABS_CNT;i++) {
+		int i;
+		for (i=0;i<=ABS_CNT;i++) {
 			lua_pushnumber(L, i);
 			lua_gettable(L, -2);
 			if (!(lua_isnil(L, -1))) {
@@ -62,7 +64,8 @@ static void parse_fuzz(lua_State *L, int idx, uinput_user_dev *dev) {
 	if (lua_isnil(L, -1)) {
 		goto out;
 	} else if (lua_istable(L, -1)) {
-		for (int i=0;i<=ABS_CNT;i++) {
+		int i;
+		for (i=0;i<=ABS_CNT;i++) {
 			lua_pushnumber(L, i);
 			lua_gettable(L, -2);
 			if (!(lua_isnil(L, -1))) {
@@ -83,7 +86,8 @@ static void parse_flat(lua_State *L, int idx, uinput_user_dev *dev) {
 	if (lua_isnil(L, -1)) {
 		goto out;
 	} else if (lua_istable(L, -1)) {
-		for (int i=0;i<=ABS_CNT;i++) {
+		int i;
+		for (i=0;i<=ABS_CNT;i++) {
 			lua_pushnumber(L, i);
 			lua_gettable(L, -2);
 			if (!(lua_isnil(L, -1))) {
