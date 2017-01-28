@@ -218,9 +218,7 @@ static int uinp_create(lua_State *L) {
 	uinput_user_dev conf;
 	uinp_read_conf(L, 2, &conf);
 	ssize_t bytes;
-//	printf("Write: %i, %p, %lo\n", d->fd, &conf, sizeof(uinput_user_dev));
 	bytes = write(d->fd, &conf, sizeof(uinput_user_dev));
-//	printf("bytes = %li\n", bytes);
 	if (bytes != sizeof(uinput_user_dev)) {
 		luaerrmsg(L, "Error while creating device (on write)");
 	};
