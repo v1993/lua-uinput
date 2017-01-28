@@ -5,7 +5,7 @@
 #include "lauxlib.h"
 #include "compat-5.2.h"
 
-#if !defined(LUA_VERSION_NUM) || LUA_VERSION_NUM == 501
+#if (!defined(LUA_VERSION_NUM) || LUA_VERSION_NUM == 501) && LUA_VERSION_NUM != 503
 
 int lua_absindex (lua_State *L, int i) {
   if (i < 0 && i > LUA_REGISTRYINDEX)

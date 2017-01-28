@@ -13,7 +13,7 @@ local TEST_CASE = lunit.TEST_CASE
 local LUA_VER = _VERSION
 local u = require "uinput"
 
-local _ENV = TEST_CASE "some_test_case"
+local _ENV = TEST_CASE "main_test_case"
 local dev
 
 function setup()
