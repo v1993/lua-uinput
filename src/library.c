@@ -297,7 +297,7 @@ static int uinp_get(lua_State *L) {
 		lua_pushcfunction(L, uinp_destroy);
 	} else if streq(str, "sync") {
 		lua_pushcfunction(L, uinp_sync);
-	} else if streq(str, "enable_events") {
+	} else if streq(str, "enable") {
 		lua_pushcfunction(L, uinp_enable_events);
 	} else if streq(str, "create") {
 		lua_pushcfunction(L, uinp_create);
@@ -337,7 +337,7 @@ static const struct luaL_Reg lib [] = {
 	{"open", uinp_open},
 	{"destroy", uinp_destroy},
 	{"sync", uinp_sync},
-	{"enable_events", uinp_enable_events},
+	{"enable", uinp_enable_events},
 	{"create", uinp_create},
 	{"emit", uinp_emit},
 	{"emit_click", uinp_emit_click},
