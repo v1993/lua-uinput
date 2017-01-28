@@ -13,6 +13,7 @@
 #include <libudev.h>
 #include <linux/uinput.h>
 
+#define LUA_COMPAT_APIINTCASTS
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
