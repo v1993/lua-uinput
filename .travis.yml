@@ -23,8 +23,8 @@ before_install:
   - luarocks install Lua-cURL         --server=https://luarocks.org/dev
   - luarocks install luacov-coveralls --server=https://luarocks.org/dev
   - luarocks install lunitx
-  - apt-get -qq update
-  - apt-get -q install libudev-dev
+  - sudo apt-get -qq update
+  - sudo apt-get -q install libudev-dev
 
 install:
   - luarocks make rockspecs/lua-uinput-scm-0.rockspec CFLAGS="-O2 -fPIC -ftest-coverage -fprofile-arcs" LIBFLAG="-shared --coverage"
