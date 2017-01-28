@@ -146,7 +146,7 @@ void luaL_checkversion (lua_State *L);
 
 int lua_absindex (lua_State *L, int i);
 void lua_copy (lua_State *L, int from, int to);
-#if !(LUA_VERSION_NUM != 503)
+#if LUA_VERSION_NUM != 503
 void lua_rawgetp (lua_State *L, int i, const void *p);
 void lua_getuservalue (lua_State *L, int i);
 #endif
