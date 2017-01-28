@@ -32,7 +32,7 @@ install:
 script:
   - cd test
   - lua -e "print(require'cURL'.version())"
-  - sudo `which lunit.sh` test.lua
+  - sudo `which lunit.sh` -i `which lua` test.lua
 
 after_success:
   - coveralls -b .. -r .. -i ./src --dump c.report.json
