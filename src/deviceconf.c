@@ -7,6 +7,7 @@ static void parse_name(lua_State *L, int idx, uinput_user_dev *dev) {
 	lua_getfield(L, idx, "name");
 	if (!(lua_isnil(L, -1))) {
 		const char *name = luaL_checkstring(L,-1);
+		luaL_argcheck(L, strlen(name) > 0, 3, "name is empty");
 		luaL_argcheck(L, strlen(name) <= UINPUT_MAX_NAME_SIZE, 3, "too long name");
 		strcpy(dev->name, name);
 	} else {

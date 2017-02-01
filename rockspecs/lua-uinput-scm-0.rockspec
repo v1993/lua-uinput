@@ -8,7 +8,7 @@ description = {
    detailed = [[Version of (s)uinput library for lua.
 You can use it for emulating devices under linux.]],
    homepage = "http://vallua.ru",
-   license = "MIT",
+   license = "GPLv3",
 }
 
 dependencies = { "lua >= 5.1" }

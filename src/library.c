@@ -286,6 +286,7 @@ static int uinp_emit_combo(lua_State *L) {
 			errors = true;
 		}
 	};
+	uinp_autosync(L);
 	if (errors) {
 		luaerrmsg(L, "Some errors occurred while writing combo, it's last one");
 	}
@@ -339,13 +340,11 @@ static int uinp_set(lua_State *L) {
 
 static const struct luaL_Reg lib [] = {
 	{"open", uinp_open},
-	{"destroy", uinp_destroy},
-	{"sync", uinp_sync},
-	{"enable", uinp_enable_events},
-	{"create", uinp_create},
-	{"emit", uinp_emit},
-	{"emit_click", uinp_emit_click},
-	{"emit_combo", uinp_emit_combo},
+	{NULL, NULL}
+};
+
+static const struct luaL_Reg lib_meta [] = {
+	{"__call", uinp_open},
 	{NULL, NULL}
 };
 
@@ -360,7 +359,10 @@ static const struct luaL_Reg uinp_meta [] = {
 int luaopen_uinput_mainpart (lua_State *L) {
 	luaL_newmetatable(L, "uinput");
 	luaL_setfuncs(L, uinp_meta, 0);
-//	uinp_dev_luaopen(L);
+	
 	luaL_newlib(L, lib);
+	lua_createtable(L, 0, 1);
+	luaL_setfuncs(L, lib_meta, 0);
+	lua_setmetatable(L, -2);
 	return 1;
 };
