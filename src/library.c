@@ -167,49 +167,73 @@ static void uinp_autosync(lua_State *L) {
 	}
 };
 
+static void uinp_enable_event(lua_State *L, UinpDevice *d, uint16_t ev_type, uint16_t ev_code) {
+	unsigned long io;
+	if (ioctl(d->fd, UI_SET_EVBIT, ev_type) == -1) {
+		luaerrmsg(L, "Unable to enable type of events");
+	}
+	switch (ev_type) {
+	case EV_KEY:
+			io = UI_SET_KEYBIT;
+			break;
+	case EV_REL:
+			io = UI_SET_RELBIT;
+			break;
+	case EV_ABS:
+			io = UI_SET_ABSBIT;
+			break;
+	case EV_MSC:
+			io = UI_SET_MSCBIT;
+			break;
+	case EV_SW:
+			io = UI_SET_SWBIT;
+			break;
+	case EV_LED:
+			io = UI_SET_LEDBIT;
+			break;
+	case EV_SND:
+			io = UI_SET_SNDBIT;
+			break;
+	case EV_FF:
+			io = UI_SET_FFBIT;
+			break;
+	default:
+			luaerr(L, "invalid event type");
+	};
+	if (ioctl(d->fd, io, ev_code) == -1) {
+		luaerrmsg(L, "Unable to enable event");
+	};
+}
+
 static int uinp_enable_events(lua_State *L) {
 	UinpDevice *d = checkuinput(L);
 	luaL_checktype(L, 2, LUA_TTABLE);
+	uint16_t ev_type;
+	uint16_t ev_code;
+	int i;
+	int len;
 	chopen(L);
 	chncreat(L);
 	lua_pushnil(L); // First iteration
 	while (lua_next(L, 2) != 0) {
-		uint16_t ev_type = lua_checkunsigned(L, -1);
-		uint16_t ev_code = lua_checkunsigned(L, -2);
-		unsigned long io;
-		if (ioctl(d->fd, UI_SET_EVBIT, ev_type) == -1) {
-			luaerrmsg(L, "Unable to enable type of events");
-		}
-		switch (ev_type) {
-		case EV_KEY:
-				io = UI_SET_KEYBIT;
+		ev_type = lua_checkunsigned(L, -2);
+		switch (lua_type(L, -1)) {
+			case LUA_TTABLE:
+				len = luaL_len(L, -1);
+				for(i = 1; i <= len; i++) {
+					lua_pushinteger(L, i);
+					lua_gettable(L, -2);
+					ev_code = lua_checkunsigned(L, -1);
+					uinp_enable_event(L, d, ev_type, ev_code);
+					lua_pop(L, 1);
+				};
 				break;
-		case EV_REL:
-				io = UI_SET_RELBIT;
+			case LUA_TNUMBER:
+				ev_code = lua_checkunsigned(L, -1);
+				uinp_enable_event(L, d, ev_type, ev_code);
 				break;
-		case EV_ABS:
-				io = UI_SET_ABSBIT;
-				break;
-		case EV_MSC:
-				io = UI_SET_MSCBIT;
-				break;
-		case EV_SW:
-				io = UI_SET_SWBIT;
-				break;
-		case EV_LED:
-				io = UI_SET_LEDBIT;
-				break;
-		case EV_SND:
-				io = UI_SET_SNDBIT;
-				break;
-		case EV_FF:
-				io = UI_SET_FFBIT;
-				break;
-		default:
-				luaerr(L, "invalid event type");
-		};
-		if (ioctl(d->fd, io, ev_code) == -1) {
-			luaerrmsg(L, "Unable to enable event");
+			default:
+				luaerrmsg(L, "invalid \"value\" in modes table");
 		};
 		lua_pop(L, 1);
 	};

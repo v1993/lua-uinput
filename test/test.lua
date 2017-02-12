@@ -27,12 +27,6 @@ function teardown()
 	assert_true(pcall_m(dev, 'destroy'))
 end
 
-function test_enable()
-	assert_false(pcall_m(dev, 'enable'), 'enable OK without arg')
-	assert_false(pcall_m(dev, 'enable', 'string'), 'enable OK with non-table arg')
-	assert_true(pcall_m(dev, 'enable', {[u.ABS_X] = u.EV_ABS, [u.KEY_A] = u.EV_KEY}))
-end;
-
 function test_sync()
 	assert_true(pcall_m(dev, 'create', {name = 'testdev_sync'}))
 	assert_true(pcall_m(dev, 'sync'))
@@ -40,20 +34,70 @@ function test_sync()
 end;
 
 function test_abs()
-	assert_true(pcall_m(dev, 'enable', {[u.ABS_X] = u.EV_ABS}))
+	assert_true(pcall_m(dev, 'enable', {[u.EV_ABS] = u.ABS_X}))
 	assert_true(pcall_m(dev, 'create', {name = 'testdev_abs', absmax = {[u.ABS_X] = 1024}, absmin = {[u.ABS_X] = 0}}))
 	assert_true(pcall_m(dev, 'emit', u.EV_ABS, u.ABS_X, 512))
 	assert_true(pcall_m(dev, 'sync'))
 end;
 
 function test_kbd()
-	assert_true(pcall_m(dev, 'enable', {[u.KEY_A] = u.EV_KEY, [u.KEY_B] = u.EV_KEY}))
+	assert_true(pcall_m(dev, 'enable', {[u.EV_KEY] = {u.KEY_A, u.KEY_B}}))
 	assert_true(pcall_m(dev, 'create', {name = 'testdev_kbd'}))
 	assert_true(pcall_m(dev, 'emit_click', u.KEY_A))
 	assert_true(pcall_m(dev, 'sync'))
 	assert_true(pcall_m(dev, 'emit_combo', {u.KEY_A, u.KEY_B}))
 	assert_true(pcall_m(dev, 'sync'))
 end;
+
+local _ENV = TEST_CASE "enable"
+local dev
+
+function setup()
+	dev = assert_userdata(u.open(), 'open returned not userdata')
+end
+
+function teardown()
+	assert_true(pcall_m(dev, 'destroy'))
+end
+
+function test_empty()
+	assert_true(pcall_m(dev, 'enable', {}))
+end
+
+function test_noarg()
+	assert_false(pcall_m(dev, 'enable'), 'enable OK without arg')
+end
+
+function test_nontable()
+	assert_false(pcall_m(dev, 'enable', 'string'), 'enable OK with non-table arg')
+end
+
+function test_badkey()
+	assert_false(pcall_m(dev, 'enable', {string = 10}), 'enable OK with non-number key')
+end
+
+function test_badval()
+	assert_false(pcall_m(dev, 'enable', {[u.EV_KEY] = 'string'}), 'enable OK with nor number nor table value')
+end
+
+function test_table_oneelement()
+	assert_true(pcall_m(dev, 'enable', {[u.EV_KEY] = {u.KEY_A}}))
+end
+
+function test_table()
+	assert_true(pcall_m(dev, 'enable', {[u.EV_KEY] = {u.KEY_A, u.KEY_A}}))
+end
+
+function test_number()
+	assert_true(pcall_m(dev, 'enable', {[u.EV_KEY] = u.KEY_A}))
+end
+
+function test_full()
+	assert_true(pcall_m(dev, 'enable', {
+		[u.EV_KEY] = u.KEY_A,
+		[u.EV_ABS] = {u.ABS_X, u.ABS_Y} 
+	}))
+end
 
 local _ENV = TEST_CASE "deviceconf"
 local dev

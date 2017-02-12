@@ -138,16 +138,16 @@ int uinp_read_conf(lua_State *L, int idx, uinput_user_dev *dev) {
 	return 0;
 };
 /* You must use table like this:
- * tab = {
- * nam = 'device name',
- * absmin = {
- * 	[uinput.ABS_X] = 0,
- * 	[uinput.ABS_Y] = 0
- * },
- * absmax = {
- * 	[uinput.ABS_X] = 1023,
- * 	[uinput.ABS_Y] = 1023
- * },
- * bustype = uinput.BUS_USB
- * }
+tab = {
+	nam = 'device name',
+	absmin = {
+		[uinput.ABS_X] = 0,
+		[uinput.ABS_Y] = 0
+	},
+	absmax = {
+		[uinput.ABS_X] = 1023,
+		[uinput.ABS_Y] = 1023
+	},
+	bustype = uinput.BUS_USB
+}
  */
