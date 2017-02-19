@@ -1,8 +1,13 @@
 #define _GNU_SOURCE
 #include "declarations.h"
 #include "deviceconf.h"
+/// This library is based on suinput library from Tuomas Jorma Juhani Räsänen
 
-// This library is based on suinput library from Tuomas Jorma Juhani Räsänen
+// @classmod uinput
+
+/***
+
+*/
 
 static uint16_t lua_checkunsigned(lua_State *L, int n) {
 	long int val = luaL_checkint(L, n);
@@ -31,7 +36,7 @@ static void chncreat(lua_State *L) {
 	}
 };
 
-// Some extra functions for dirty work
+/// Some extra functions for dirty work
 
 static int write_event(int uinput_fd, const struct input_event *event_p, lua_State *L)
 {
@@ -110,7 +115,14 @@ out:
 		return retval;
 };
 
-// Main functions
+/// Main functions
+
+/***
+Open new device.
+Opens uinput control device and prepares object. It can also be called directly by calling the module table.
+@function open
+@treturn uinput new uinput device or an error, if opening failed
+*/
 
 static int uinp_open (lua_State *L) {
 	int fd;
@@ -132,6 +144,21 @@ static int uinp_open (lua_State *L) {
 	return 1;
 };
 
+// @type uinput
+
+/***
+@field autosync is SYN_REPORT will be sent after eevry successful operation
+@field fd file descriptor (number, RO)
+@field created is device created (boolean, RO)
+@field closed is device closed (boolean, RO)
+*/
+
+/***
+Destroy device.
+Send UI_DEV_DESTROY to device and close its file
+@function destroy
+*/
+
 static int uinp_destroy(lua_State *L) {
 	UinpDevice *d = checkuinput(L);
 	int uinput_fd = d->fd;
@@ -148,9 +175,14 @@ static int uinp_destroy(lua_State *L) {
 	if (clres == -1) {
 		luaerrmsg(L, "Error while destroying (on close)");
 	}
-//	printf("%p destrroyd\n", d);
 	return 0;
 };
+
+/***
+Sync every writen events.
+It just will write SYN_REPORT to device.
+@function sync
+*/
 
 static int uinp_sync(lua_State *L) {
 	UinpDevice *d = checkuinput(L);
@@ -205,6 +237,12 @@ static void uinp_enable_event(lua_State *L, UinpDevice *d, uint16_t ev_type, uin
 	};
 }
 
+/***
+Enable events.
+It will register selected events as possible for this device.
+Keys in input table must be EV_ constants, and values -- tables with event constants or just event constants
+*/
+
 static int uinp_enable_events(lua_State *L) {
 	UinpDevice *d = checkuinput(L);
 	luaL_checktype(L, 2, LUA_TTABLE);
@@ -214,7 +252,7 @@ static int uinp_enable_events(lua_State *L) {
 	int len;
 	chopen(L);
 	chncreat(L);
-	lua_pushnil(L); // First iteration
+	lua_pushnil(L); /// First iteration
 	while (lua_next(L, 2) != 0) {
 		ev_type = lua_checkunsigned(L, -2);
 		switch (lua_type(L, -1)) {
@@ -278,7 +316,7 @@ static int uinp_emit_click(lua_State *L) {
 	chcreat(L);
 	bool ok;
 	ok = orig_emit(d->fd, EV_KEY, key_code, 1, NULL);
-	ok &= orig_emit(d->fd, EV_KEY, key_code, 0, NULL); // Try to unpress it always
+	ok &= orig_emit(d->fd, EV_KEY, key_code, 0, NULL); /// Try to unpress it always
 	uinp_autosync(L);
 	if (L == NULL) {
 		return ok;
@@ -317,7 +355,7 @@ static int uinp_emit_combo(lua_State *L) {
 	return 0;
 };
 
-// Metatable for objects
+/// Metatable for objects
 
 static int uinp_get(lua_State *L) {
 	UinpDevice *d = checkuinput(L);
@@ -360,7 +398,7 @@ static int uinp_set(lua_State *L) {
 	return 0;
 };
 
-// Library openning
+/// Library openning
 
 static const struct luaL_Reg lib [] = {
 	{"open", uinp_open},
@@ -379,7 +417,7 @@ static const struct luaL_Reg uinp_meta [] = {
 	{NULL, NULL}
 };
 
-//int luaopen_library (lua_State *L) {
+///int luaopen_library (lua_State *L) {
 int luaopen_uinput_mainpart (lua_State *L) {
 	luaL_newmetatable(L, "uinput");
 	luaL_setfuncs(L, uinp_meta, 0);
